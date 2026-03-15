@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-RENTAL | Alquiler Profesional</title>
+    <style>
+        :root {
+            --bg-black: #050505;
+            --card-bg: #111111;
+            --xbox-green: #1b5e20;
+            --xbox-bright: #2e7d32;
+            --text-white: #ffffff;
+            --text-muted: #888888;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            line-height: 1.6;
+        }
+
+        /* --- Encabezado Principal --- */
+        header {
+            padding: 4rem 10%;
+            text-align: center;
+            border-bottom: 1px solid #222;
+            background: linear-gradient(to bottom, #000, #050505);
+        }
+
+        header h1 { font-size: 3.5rem; margin: 0; color: var(--xbox-bright); letter-spacing: -2px; }
+        header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        /* --- Sección Requisitos --- */
+        .requirements-box {
+            background: #0a0a0a;
+            border: 1px dashed var(--xbox-green);
+            margin: 2rem auto;
+            padding: 2rem;
+            max-width: 900px;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .requirements-box { grid-template-columns: 1fr; }
+        }
+
+        .req-item h4 { color: var(--xbox-bright); margin-top: 0; }
+        .req-item p { font-size: 0.9rem; color: #ccc; }
+
+        /* --- Layout --- */
+        .container { padding: 0 5% 2rem; max-width: 1100px; margin: auto; }
+        
+        /* --- Encabezados Adhesivos (Sticky) --- */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background-color: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(10px); /* Efecto cristalino */
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1.5rem 0;
+            margin: 2rem 0;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-white);
+            border-bottom: 2px solid var(--xbox-green);
+            z-index: 100; /* Lo mantiene por encima de las tarjetas */
+        }
+        
+        /* --- Cuadrículas (Grid) Responsivas --- */
+        .grid-productos {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 4rem; /* Espacio antes de la siguiente sección */
+        }
+
+        /* Pantallas muy pequeñas (Ej. Celulares estrechos) -> 1 Columna (1x6) */
+        @media (max-width: 480px) {
+            .grid-productos { grid-template-columns: 1fr; }
+        }
+
+        /* Celulares normales y Tablets -> 2 Columnas (2x3) */
+        @media (min-width: 481px) and (max-width: 850px) {
+            .grid-productos { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Computadores (PC) -> 3 Columnas (3x2) */
+        @media (min-width: 851px) {
+            .grid-productos { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid #222;
+            padding: 2rem 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .card:hover { border-color: var(--xbox-bright); transform: scale(1.02); }
+        .card h3 { font-size: 1.2rem; color: var(--text-muted); margin-top: 0; }
+        .card .price { font-size: 1.8rem; color: var(--xbox-bright); display: block; margin: 15px 0; font-weight: bold; }
+
+        .btn-reserva {
+            background: var(--xbox-green);
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-reserva:hover { background: var(--xbox-bright); }
+
+        /* --- Modal Estilo --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000; /* Asegura que el modal tape el sticky header */
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: #111;
+            margin: 5% auto;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+
+        .info-consola {
+            background: #1a1a1a;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--xbox-bright);
+        }
+
+        .contract-preview {
+            background: #fdfdfd;
+            color: #333;
+            padding: 1.5rem;
+            font-family: serif;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+            border-left: 5px solid var(--xbox-green);
+        }
+
+        .close { float: right; font-size: 2rem; cursor: pointer; color: var(--text-muted); }
+        .whatsapp-btn {
+            display: block;
+            background: #25d366;
+            color: black;
+            text-align: center;
+            padding: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem;
+            border-top: 1px solid #222;
+            margin-top: 2rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>X-RENTAL</h1>
+    <p>Experiencia de juego premium en casa</p>
+</header>
+
+<div class="container">
+    
+    <div class="requirements-box">
+        <div class="req-item">
+            <h4>1. Identificación</h4>
+            <p>Es obligatoria la fotocopia de la cédula del arrendatario. Si es menor de edad, se requiere la de un padre o acudiente responsable.</p>
+        </div>
+        <div class="req-item">
+            <h4>2. Garantía y Contrato</h4>
+            <p>Al recibir la consola, se firma un acta de entrega. El usuario asume responsabilidad legal sobre el equipo.</p>
+        </div>
+    </div>
+
+    <div class="sticky-header">Catálogo Xbox 360</div>
+    <div class="grid-productos" id="grid-360"></div>
+
+    <div class="sticky-header">Catálogo Xbox One</div>
+    <div class="grid-productos" id="grid-one"></div>
+
+</div>
+
+<div id="infoModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<footer>
+    <p>Atención al cliente: <strong>+57 311 5171920</strong></p>
+    <p>Servicio disponible bajo reserva previa.</p>
+</footer>
+
+<script>
+    const grid360 = document.getElementById('grid-360');
+    const gridOne = document.getElementById('grid-one');
+    const modal = document.getElementById('infoModal');
+
+    function init() {
+        for (let i = 0; i < 6; i++) {
+            let horas = 6 + (i * 4);
+            let precio360 = 8000 + (i * 4000);
+            let precioOne = precio360 + 5000;
+
+            grid360.innerHTML += `
+                <div class="card">
+                    <h3>${horas} Horas</h3>
+                    <span class="price">$${precio360.toLocaleString()}</span>
+                    <button class="btn-reserva" onclick="openModal('Xbox 360', ${horas}, ${precio360})">Reservar</button>
+                </div>`;
+            
+            gridOne.innerHTML += `
+                <div class="card">
+                    <h3>${horas} Horas</h3>
+                    <span class="price">$${precioOne.toLocaleString()}</span>
+                    <button class="btn-reserva" onclick="openModal('Xbox One', ${horas}, ${precioOne})">Reservar</button>
+                </div>`;
+        }
+    }
+
+    function openModal(consola, horas, precio) {
+        const ratio = (precio / horas).toFixed(0);
+        const modalBody = document.getElementById('modalBody');
+        
+        const detallesConsola = consola === 'Xbox 360' 
+            ? 'Incluye 2 controles, cableado completo y +50 juegos clásicos instalados (Halo, Gears of War, FIFA, etc).' 
+            : 'Incluye 2 controles inalámbricos, resolución HD/4K y acceso a títulos de nueva generación (Warzone, Forza, etc).';
+
+        modalBody.innerHTML = `
+            <h2 style="color:var(--xbox-bright); text-align:left; margin-top:0;">Ficha de Reserva</h2>
+            <p><strong>Consola:</strong> ${consola}<br>
+            <strong>Tiempo:</strong> ${horas} Horas de uso<br>
+            <strong>Valor Total:</strong> $${precio.toLocaleString()} COP<br>
+            <strong>Relación:</strong> $${ratio} COP por hora</p>
+
+            <div class="info-consola">
+                <strong>🎮 Qué incluye tu alquiler:</strong><br>
+                ${detallesConsola}
+            </div>
+
+            <div class="contract-preview">
+                <strong>📜 TÉRMINOS Y RECIBO:</strong><br><br>
+                1. La consola se entrega en perfecto estado funcional y cosmético.<br>
+                2. En caso de daños físicos, derrame de líquidos o fallos por mal uso, el arrendatario 
+                   <strong>se hace responsable del 70% del valor comercial</strong> de la reparación o reemplazo.<br>
+                3. Prohibido abrir la consola o manipular sellos de garantía.<br>
+                4. La entrega se realiza tras verificar la documentación física (fotocopia de cédula).
+            </div>
+
+            <p style="font-size:0.85rem; color:#aaa; text-align:center;">* Al continuar, confirmas estar de acuerdo con las condiciones del servicio.</p>
+            
+            <a href="https://wa.me/573115171920?text=Hola, deseo alquilar la ${consola} por ${horas} horas. Entiendo los requisitos y acepto los términos del contrato." class="whatsapp-btn">
+                SOLICITAR POR WHATSAPP (+57 311 5171920)
+            </a>
+        `;
+        modal.style.display = "block";
+    }
+
+    function closeModal() { modal.style.display = "none"; }
+    window.onclick = function(e) { if (e.target == modal) closeModal(); }
+
+    init();
+</script>
+
+<div style="background: var(--xbox-bright); color: white; text-align: center; padding: 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid #000; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+    🔥 ¡OFERTA RELÁMPAGO! Por cada alquiler, recibes <span style="background: white; color: var(--xbox-bright); padding: 2px 8px; border-radius: 4px; font-size: 1.2rem;">2 HORAS EXTRAS</span> totalmente gratis 🔥
+</div>
+
+</body>
+</html>
